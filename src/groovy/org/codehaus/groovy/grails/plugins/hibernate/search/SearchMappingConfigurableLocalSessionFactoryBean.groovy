@@ -14,8 +14,11 @@
  */
 package org.codehaus.groovy.grails.plugins.hibernate.search
 
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.ClassPropertyFetcher
 import org.codehaus.groovy.grails.orm.hibernate.ConfigurableLocalSessionFactoryBean
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsAnnotationConfiguration
 import org.hibernate.HibernateException
 import org.hibernate.cfg.Configuration
 import org.hibernate.search.Environment
@@ -23,14 +26,22 @@ import org.hibernate.search.cfg.SearchMapping
 import org.springframework.jndi.JndiTemplate
 
 class SearchMappingConfigurableLocalSessionFactoryBean extends ConfigurableLocalSessionFactoryBean {
+    private static final Log LOG = LogFactory.getLog(SearchMappingConfigurableLocalSessionFactoryBean.class);
 
     private static final String DIRECTORY_PROVIDER = "hibernate.search.default.directory_provider"
     private static final String INDEX_BASE = "hibernate.search.default.indexBase"
     private static final String INDEX_BASE_JNDI_NAME = "hibernate.search.default.indexBaseJndiName"
 
     @Override
+    protected GrailsAnnotationConfiguration newConfiguration() throws Exception {
+        GrailsAnnotationConfiguration config = super.newConfiguration()
+        postProcessConfiguration(config)
+        return config
+    }
+
+//    @Override
     protected void postProcessConfiguration( Configuration config ) throws HibernateException {
-        super.postProcessConfiguration( config )
+//        super.postProcessConfiguration( config )
 
         try {
 
@@ -50,14 +61,14 @@ class SearchMappingConfigurableLocalSessionFactoryBean extends ConfigurableLocal
                 properties.setProperty( INDEX_BASE, "${System.properties['user.home']}${sep}.grails${sep}${grailsApplication.metadata["app.grails.version"]}${sep}projects${sep}${grailsApplication.metadata["app.name"]}${sep}lucene-index${sep}${grails.util.GrailsUtil.getEnvironment()}" )
             }
 
-            def searchMapping = new SearchMapping()
+            SearchMapping searchMapping = new SearchMapping()
 
             // global config
             def hibernateSearchConfig = grailsApplication.config.grails.plugins.hibernatesearch
 
             if ( hibernateSearchConfig && hibernateSearchConfig instanceof Closure ) {
 
-                def searchMappingGlobalConfig = new SearchMappingGlobalConfig( searchMapping )
+                SearchMappingGlobalConfig searchMappingGlobalConfig = new SearchMappingGlobalConfig( searchMapping )
 
                 hibernateSearchConfig.delegate = searchMappingGlobalConfig
                 hibernateSearchConfig.resolveStrategy = Closure.DELEGATE_FIRST
@@ -72,7 +83,7 @@ class SearchMappingConfigurableLocalSessionFactoryBean extends ConfigurableLocal
 
                 if ( searchClosure ) {
 
-                    def searchMappingEntityConfig = new SearchMappingEntityConfig( searchMapping, it.clazz )
+                    SearchMappingEntityConfig searchMappingEntityConfig = new SearchMappingEntityConfig( searchMapping, it.clazz )
 
                     searchClosure.delegate = searchMappingEntityConfig
                     searchClosure.resolveStrategy = Closure.DELEGATE_FIRST
@@ -83,7 +94,7 @@ class SearchMappingConfigurableLocalSessionFactoryBean extends ConfigurableLocal
             properties.put( Environment.MODEL_MAPPING, searchMapping )
 
         } catch ( Exception e ) {
-            logger.error( "Error while indexing entities", e )
+            LOG.error( "Error while indexing entities", e )
         }
     }
 

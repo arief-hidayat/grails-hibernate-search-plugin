@@ -1,15 +1,16 @@
 import org.codehaus.groovy.grails.commons.ClassPropertyFetcher
+import org.codehaus.groovy.grails.orm.hibernate.GrailsHibernateTemplate
+import org.codehaus.groovy.grails.orm.hibernate.GrailsHibernateTemplate.HibernateCallback
 import org.codehaus.groovy.grails.plugins.hibernate.search.HibernateSearchConfig
 import org.codehaus.groovy.grails.plugins.hibernate.search.HibernateSearchQueryBuilder
 import org.codehaus.groovy.grails.plugins.hibernate.search.SearchMappingConfigurableLocalSessionFactoryBean
 import org.hibernate.Session
+import org.hibernate.SessionFactory
 import org.hibernate.search.annotations.Indexed
 import org.springframework.core.annotation.AnnotationUtils
-import org.springframework.orm.hibernate3.HibernateCallback
-import org.springframework.orm.hibernate3.HibernateTemplate
 
 class HibernateSearchGrailsPlugin {
-    def version = "0.8"
+    def version = "0.9-SNAPSHOT"
     def grailsVersion = "2.0 > *"
     def loadAfter = ['hibernate']
     def title = "Hibernate Search Plugin"
@@ -33,9 +34,11 @@ class HibernateSearchGrailsPlugin {
 
     def doWithDynamicMethods = { ctx ->
 
-        def sessionFactory = ctx.sessionFactory
+        SessionFactory sessionFactory = ctx.sessionFactory
 
-        def hibernateTemplate = new HibernateTemplate( sessionFactory )
+        GrailsHibernateTemplate hibernateTemplate = new GrailsHibernateTemplate( sessionFactory )
+
+
 
         // add search() method to indexed domain classes:
         application.domainClasses.each { grailsClass ->
