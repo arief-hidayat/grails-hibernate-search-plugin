@@ -3,12 +3,12 @@ package org.codehaus.groovy.grails.plugins.hibernate.search.components
 import org.apache.lucene.search.Query
 import org.hibernate.search.query.dsl.FieldCustomization
 
-abstract class Leaf extends Composite {
-	def field
+abstract class Leaf<T extends FieldCustomization> extends Composite {
+	protected String field
 
 	def ignoreAnalyzer = false
 	def ignoreFieldBridge = false
-	def boostedTo
+	Float boostedTo
 
 	final def leftShift( component ) {
 		throw new UnsupportedOperationException( "${this.class.name} is a leaf" )
@@ -26,7 +26,7 @@ abstract class Leaf extends Composite {
 		createQuery( fieldCustomization )
 	}
 
-	abstract Query createQuery( FieldCustomization fieldCustomization )
+	abstract Query createQuery( T fieldCustomization )
 
-	abstract FieldCustomization createFieldCustomization( )
+	abstract T createFieldCustomization( )
 }

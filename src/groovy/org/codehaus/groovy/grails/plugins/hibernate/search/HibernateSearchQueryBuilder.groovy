@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.hibernate.search
 import org.apache.lucene.search.Filter
 import org.apache.lucene.search.Sort
 import org.apache.lucene.search.SortField
+import org.codehaus.groovy.grails.plugins.hibernate.search.components.*
 import org.grails.datastore.mapping.reflect.ClassPropertyFetcher
 import org.hibernate.Session
 import org.hibernate.search.FullTextQuery
@@ -24,7 +25,6 @@ import org.hibernate.search.FullTextSession
 import org.hibernate.search.MassIndexer
 import org.hibernate.search.Search
 import org.hibernate.search.query.dsl.QueryBuilder
-import org.codehaus.groovy.grails.plugins.hibernate.search.components.*
 
 class HibernateSearchQueryBuilder {
 
@@ -45,7 +45,7 @@ class HibernateSearchQueryBuilder {
 	private static final List MASS_INDEXER_METHODS = MassIndexer.methods.findAll { it.returnType == MassIndexer }*.name
 
 	private final FullTextSession fullTextSession
-	private final clazz
+	private final Class clazz
 	private final instance
 	private final staticContext
 
@@ -60,12 +60,12 @@ class HibernateSearchQueryBuilder {
 	private def filterDefinitions = [:]
 	private def projection = []
 
-	private def root
+	private Component root
 	private def currentNode
 
 	Filter filter
 
-	HibernateSearchQueryBuilder( clazz, instance, Session session ) {
+	HibernateSearchQueryBuilder( Class clazz, instance, Session session ) {
 		this.clazz = clazz
 		this.fullTextSession = Search.getFullTextSession( session )
 		this.instance = instance
@@ -77,10 +77,7 @@ class HibernateSearchQueryBuilder {
 	}
 
 	private FullTextQuery createFullTextQuery( ) {
-		def query = fullTextSession.createFullTextQuery(
-			root.createQuery(),
-			clazz
-		)
+		def query = fullTextSession.createFullTextQuery( root.createQuery(), clazz )
 
 		filterDefinitions?.each { filterName, filterParams ->
 

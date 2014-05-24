@@ -1,16 +1,16 @@
 package org.codehaus.groovy.grails.plugins.hibernate.search.components
 
 import org.apache.lucene.search.Query
-import org.hibernate.search.query.dsl.FieldCustomization
+import org.hibernate.search.query.dsl.TermMatchingContext
 
-class WildcardComponent extends Leaf {
+class WildcardComponent extends Leaf<TermMatchingContext> {
 	def matching
 
-	Query createQuery( FieldCustomization fieldCustomization ) {
+	Query createQuery( TermMatchingContext fieldCustomization ) {
 		fieldCustomization.matching( matching ).createQuery()
 	}
 
-	FieldCustomization createFieldCustomization( ) {
+    TermMatchingContext createFieldCustomization( ) {
 		queryBuilder.keyword().wildcard().onField( field )
 	}
 }

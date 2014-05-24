@@ -1,12 +1,12 @@
 package org.codehaus.groovy.grails.plugins.hibernate.search.components
 
 import org.apache.lucene.search.Query
-import org.hibernate.search.query.dsl.FieldCustomization
+import org.hibernate.search.query.dsl.RangeMatchingContext
 
-class AboveComponent extends Leaf {
+class AboveComponent extends Leaf<RangeMatchingContext> {
 	def above
 
-	Query createQuery( FieldCustomization fieldCustomization ) { fieldCustomization.above( above ).createQuery() }
+	Query createQuery( RangeMatchingContext fieldCustomization ) { fieldCustomization.above( above ).createQuery() }
 
-	FieldCustomization createFieldCustomization( ) { queryBuilder.range().onField( field ) }
+    RangeMatchingContext createFieldCustomization( ) { queryBuilder.range().onField( field ) }
 }

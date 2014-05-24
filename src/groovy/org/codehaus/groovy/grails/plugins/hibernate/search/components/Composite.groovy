@@ -2,11 +2,9 @@ package org.codehaus.groovy.grails.plugins.hibernate.search.components
 
 import org.hibernate.search.query.dsl.QueryBuilder
 
-abstract class Composite implements Component {
-
+abstract class Composite extends Component {
 	QueryBuilder queryBuilder
-	def parent
-	def children = []
+	List<Component> children = []
 
 	def leftShift( component ) {
 		assert component instanceof Component: "'component' should be an instance of Component"

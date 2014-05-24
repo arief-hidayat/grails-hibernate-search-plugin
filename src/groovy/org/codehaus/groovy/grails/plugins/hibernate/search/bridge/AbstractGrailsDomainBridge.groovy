@@ -1,8 +1,7 @@
 package org.codehaus.groovy.grails.plugins.hibernate.search.bridge
 
+import grails.util.Holders
 import org.hibernate.search.bridge.TwoWayStringBridge
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.hibernate.search.bridge.ParameterizedBridge
 
 /** 
 * This class is the commen base for nameBridge and Idbridge
@@ -10,7 +9,7 @@ import org.hibernate.search.bridge.ParameterizedBridge
 */
 abstract class AbstractGrailsDomainBridge<Domain> implements TwoWayStringBridge{
 	protected Class getGrailsDomain(){
-		return ApplicationHolder.application.getClassForName(
+		return Holders.grailsApplication.getClassForName(
 			Domain.class.getName()
 		)
 	}

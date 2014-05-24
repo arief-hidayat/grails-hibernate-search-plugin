@@ -9,7 +9,7 @@ class IdBridge<Domain> extends AbstractGrailsDomainBridge<Domain>{
 	@Override
 	String objectToString(Object object) {
 		// otherwise it should crash
-		return object.id.toString()
+		return object.id?.toString()
 	}
 
 	@Override
@@ -17,4 +17,5 @@ class IdBridge<Domain> extends AbstractGrailsDomainBridge<Domain>{
 		// should crash if not has method
 		return getGrailsDomain().findById(stringValue)
 	}
+
 }

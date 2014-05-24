@@ -1,17 +1,18 @@
 package org.codehaus.groovy.grails.plugins.hibernate.search.components
 
 import org.apache.lucene.search.Query
-import org.hibernate.search.query.dsl.FieldCustomization
 import org.hibernate.search.query.dsl.FuzzyContext
+import org.hibernate.search.query.dsl.TermMatchingContext
 
-class FuzzyComponent extends Leaf {
+class FuzzyComponent extends Leaf<TermMatchingContext> {
 	def matching
-	def threshold
+	Float threshold
 
-	Query createQuery( FieldCustomization fieldCustomization ) { fieldCustomization.matching( matching ).createQuery() }
+	Query createQuery( TermMatchingContext fieldCustomization ) { fieldCustomization.matching( matching ).createQuery() }
 
-	FieldCustomization createFieldCustomization( ) {
+    TermMatchingContext createFieldCustomization( ) {
 		FuzzyContext context = queryBuilder.keyword().fuzzy()
 		if (threshold) { context.withThreshold( threshold ) }
-		context.onField( field ) }
+		context.onField( field )
+    }
 }

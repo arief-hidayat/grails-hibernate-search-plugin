@@ -8,7 +8,7 @@ import org.hibernate.search.Search
 import org.springframework.core.annotation.AnnotationUtils
 
 class HibernateSearchGrailsPlugin {
-	def version = "0.81"
+	def version = "0.9-SNAPSHOT"
 	def grailsVersion = "2.3.3"
 	def loadAfter = ['hibernate']
 	def title = "Hibernate Search Plugin"
